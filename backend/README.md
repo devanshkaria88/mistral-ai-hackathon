@@ -1,98 +1,219 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Resurrect AI - Backend API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+NestJS backend for the Resurrect AI voice-first memory preservation platform.
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Voice-first conversational AI platform that helps elderly users preserve their life stories through natural conversations with an AI companion (Evie), and allows family members to interact with an AI persona of their loved ones using cloned voices.
 
-## Project setup
+## Tech Stack
+
+- **Framework**: NestJS (Node.js)
+- **Database**: PostgreSQL with pgvector extension
+- **ORM**: TypeORM
+- **Auth**: Firebase Admin SDK + JWT
+- **Voice AI**: ElevenLabs Conversational AI
+- **LLM**: Mistral Large 3 (via AWS Bedrock)
+- **Embeddings**: Mistral Embed
+- **Monitoring**: Weights & Biases (optional)
+
+## Prerequisites
+
+- Node.js 20+
+- Docker & Docker Compose
+- PostgreSQL 16 with pgvector
+- Firebase project with service account
+- ElevenLabs account with 2 agents (Companion + Persona)
+- AWS account with Bedrock access
+- Mistral API key (optional)
+
+## Environment Setup
+
+1. **Copy environment template**:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Configure required variables** in `.env`:
+   - Database credentials
+   - JWT secrets
+   - Firebase service account details
+   - AWS Bedrock credentials (including `AWS_SESSION_TOKEN` if using temporary credentials)
+   - ElevenLabs API key and both agent IDs
+   - Mistral API key (optional)
+
+3. **Add Firebase service account JSON**:
+   - Download from Firebase Console → Project Settings → Service Accounts
+   - Place in `backend/` directory (will be gitignored)
+   - Update `FIREBASE_PRIVATE_KEY` in `.env`
+
+## Installation
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Compile and run the project
+## Database Setup
+
+### Using Docker (Recommended)
 
 ```bash
-# development
-$ npm run start
+# Start PostgreSQL with pgvector
+docker compose up -d
 
-# watch mode
-$ npm run start:dev
+# Create database
+docker exec memoryvault-db psql -U postgres -c "CREATE DATABASE ressurect;"
 
-# production mode
-$ npm run start:prod
+# Run migrations
+npm run migration:run
 ```
 
-## Run tests
+### Manual Setup
 
 ```bash
-# unit tests
-$ npm run test
+# Install PostgreSQL 16 with pgvector extension
+# Create database
+createdb ressurect
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Run migrations
+npm run migration:run
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## Running the Application
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Development with hot reload
+npm run start:dev
+
+# Production
+npm run build
+npm run start:prod
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+The API will be available at:
+- **API**: http://localhost:3000/api
+- **Swagger Docs**: http://localhost:3000/api/docs
 
-## Resources
+## Database Migrations
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+# Run pending migrations
+npm run migration:run
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Revert last migration
+npm run migration:revert
 
-## Support
+# Generate new migration
+npm run migration:generate -- src/migrations/MigrationName
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# Create empty migration
+npm run migration:create -- src/migrations/MigrationName
+```
 
-## Stay in touch
+## AWS Credentials Management
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+For temporary AWS Workshop Studio credentials:
+
+```bash
+# Refresh credentials (paste export commands)
+./scripts/refresh-aws-creds.sh
+
+# Or use interactive mode
+./scripts/refresh-aws-creds-interactive.sh
+
+# Check credential validity
+./scripts/check-aws-creds.sh
+```
+
+See `scripts/README.md` for details.
+
+## API Documentation
+
+Once running, visit http://localhost:3000/api/docs for interactive Swagger documentation.
+
+### Key Endpoints
+
+- `POST /api/auth/google` - Sign in with Google
+- `POST /api/conversations` - Start Companion or Persona conversation
+- `POST /api/conversations/:id/end` - End conversation and process stories
+- `GET /api/stories` - List user's stories
+- `POST /api/persona/ask` - Ask persona a question
+- `GET /api/family/vault/:elderlyUserId` - Get family vault
+
+## Project Structure
+
+```
+src/
+├── auth/              # Firebase + JWT authentication
+├── users/             # User management
+├── conversations/     # Conversation lifecycle
+├── stories/           # Story management & search
+├── persona/           # AI persona interactions
+├── family/            # Family groups & invites
+├── voice/             # Voice profile & cloning
+├── integrations/      # External services
+│   ├── elevenlabs/    # ElevenLabs Conversational AI
+│   ├── bedrock/       # AWS Bedrock (Mistral)
+│   ├── mistral/       # Mistral API
+│   ├── firebase/      # Firebase Admin
+│   └── wandb/         # Weights & Biases
+├── common/            # Shared utilities
+├── config/            # Configuration
+└── migrations/        # Database migrations
+```
+
+## Testing
+
+```bash
+# Unit tests
+npm run test
+
+# E2E tests
+npm run test:e2e
+
+# Test coverage
+npm run test:cov
+```
+
+## Docker Deployment
+
+```bash
+# Build and run with Docker Compose
+docker compose -f docker-compose.yml up -d
+
+# View logs
+docker compose logs -f api
+
+# Stop services
+docker compose down
+```
+
+## Environment Variables Reference
+
+See `.env.example` for all available configuration options.
+
+**Critical Variables**:
+- `ELEVENLABS_COMPANION_AGENT_ID` - Agent for elderly users (Evie)
+- `ELEVENLABS_PERSONA_AGENT_ID` - Agent for family members (uses cloned voice)
+- `ELEVENLABS_COMPANION_VOICE_ID` - Preset voice for Companion (default: Rachel)
+
+## Troubleshooting
+
+### Database Connection Issues
+- Ensure PostgreSQL is running: `docker compose ps`
+- Check credentials in `.env` match docker-compose.yml
+- Verify database exists: `docker exec memoryvault-db psql -U postgres -l`
+
+### AWS Credentials Expired
+- Temporary credentials expire after a few hours
+- Run `./scripts/refresh-aws-creds.sh` to update
+- Check validity with `./scripts/check-aws-creds.sh`
+
+### ElevenLabs Agent Not Working
+- Verify both agent IDs are correct in `.env`
+- Check API key is valid
+- Ensure agents are configured in ElevenLabs dashboard with proper system prompts
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+MIT
