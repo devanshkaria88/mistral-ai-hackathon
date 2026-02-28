@@ -1,0 +1,24 @@
+swagger_parser:
+  schema_path: swagger.json
+  output_directory: lib/features/api/generated
+  language: dart
+  
+  # Retrofit configuration
+  client_postfix: Client
+  put_clients_in_folder: true
+  
+  # JSON serialization
+  json_serializer: json_serializable
+  
+  # Freezed for models
+  freezed: true
+  
+  # Additional options
+  replacement_rules:
+    - pattern: 'Dto$'
+      replacement: ''
+    - pattern: 'Response$'
+      replacement: ''
+  
+  # Skip generation of certain endpoints if needed
+  # skip_endpoints: []

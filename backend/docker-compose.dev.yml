@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    container_name: memoryvault-api-dev
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run start:dev
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/memoryvault
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=memoryvault
+      - JWT_SECRET=dev-jwt-secret-change-in-production
+      - JWT_REFRESH_SECRET=dev-jwt-refresh-secret-change-in-production
+      - FIREBASE_PROJECT_ID=memoryvault-dev
+      - FIREBASE_PRIVATE_KEY=${FIREBASE_PRIVATE_KEY:-"-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC7\n-----END PRIVATE KEY-----\n"}
+      - FIREBASE_CLIENT_EMAIL=firebase-adminsdk@memoryvault-dev.iam.gserviceaccount.com
+      - AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
+      - AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+      - AWS_REGION=us-east-1
+      - ELEVENLABS_API_KEY=sk_placeholder_elevenlabs_api_key
+      - ELEVENLABS_AGENT_ID=agent_placeholder_id
+      - WANDB_API_KEY=
+      - WANDB_PROJECT=memoryvault-dev
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - memoryvault-network
+
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: memoryvault-db-dev
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=memoryvault
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+      - ./src/migrations/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d memoryvault"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - memoryvault-network
+
+volumes:
+  postgres_data_dev:
+
+networks:
+  memoryvault-network:
+    driver: bridge
