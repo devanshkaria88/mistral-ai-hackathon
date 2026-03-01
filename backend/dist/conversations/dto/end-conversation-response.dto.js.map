@@ -1,1 +1,0 @@
-{"version":3,"file":"end-conversation-response.dto.js","sourceRoot":"","sources":["../../../src/conversations/dto/end-conversation-response.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,6CAA8C;AAE9C,MAAa,0BAA0B;IAKrC,MAAM,CAAS;CAChB;AAND,gEAMC;AADC;IAJC,IAAA,qBAAW,EAAC;QACX,WAAW,EAAE,2BAA2B;QACxC,OAAO,EAAE,YAAY;KACtB,CAAC;;0DACa"}

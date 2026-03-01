@@ -128,12 +128,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String displayName,  String email,  String? photoUrl,  int conversationsCount,  int storiesCount,  String voiceQualityTier,  int voiceSamplesCount)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String displayName,  String email,  String? photoUrl,  int conversationsCount,  int storiesCount,  String voiceQualityTier,  int voiceSamplesCount,  List<AudioSample> audioSamples)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ProfileInitial() when initial != null:
 return initial();case ProfileLoading() when loading != null:
 return loading();case ProfileLoaded() when loaded != null:
-return loaded(_that.displayName,_that.email,_that.photoUrl,_that.conversationsCount,_that.storiesCount,_that.voiceQualityTier,_that.voiceSamplesCount);case ProfileError() when error != null:
+return loaded(_that.displayName,_that.email,_that.photoUrl,_that.conversationsCount,_that.storiesCount,_that.voiceQualityTier,_that.voiceSamplesCount,_that.audioSamples);case ProfileError() when error != null:
 return error(_that.message);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String displayName,  String email,  String? photoUrl,  int conversationsCount,  int storiesCount,  String voiceQualityTier,  int voiceSamplesCount)  loaded,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String displayName,  String email,  String? photoUrl,  int conversationsCount,  int storiesCount,  String voiceQualityTier,  int voiceSamplesCount,  List<AudioSample> audioSamples)  loaded,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case ProfileInitial():
 return initial();case ProfileLoading():
 return loading();case ProfileLoaded():
-return loaded(_that.displayName,_that.email,_that.photoUrl,_that.conversationsCount,_that.storiesCount,_that.voiceQualityTier,_that.voiceSamplesCount);case ProfileError():
+return loaded(_that.displayName,_that.email,_that.photoUrl,_that.conversationsCount,_that.storiesCount,_that.voiceQualityTier,_that.voiceSamplesCount,_that.audioSamples);case ProfileError():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String displayName,  String email,  String? photoUrl,  int conversationsCount,  int storiesCount,  String voiceQualityTier,  int voiceSamplesCount)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String displayName,  String email,  String? photoUrl,  int conversationsCount,  int storiesCount,  String voiceQualityTier,  int voiceSamplesCount,  List<AudioSample> audioSamples)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case ProfileInitial() when initial != null:
 return initial();case ProfileLoading() when loading != null:
 return loading();case ProfileLoaded() when loaded != null:
-return loaded(_that.displayName,_that.email,_that.photoUrl,_that.conversationsCount,_that.storiesCount,_that.voiceQualityTier,_that.voiceSamplesCount);case ProfileError() when error != null:
+return loaded(_that.displayName,_that.email,_that.photoUrl,_that.conversationsCount,_that.storiesCount,_that.voiceQualityTier,_that.voiceSamplesCount,_that.audioSamples);case ProfileError() when error != null:
 return error(_that.message);case _:
   return null;
 
@@ -257,7 +257,7 @@ String toString() {
 
 
 class ProfileLoaded implements ProfileState {
-  const ProfileLoaded({required this.displayName, required this.email, this.photoUrl, required this.conversationsCount, required this.storiesCount, required this.voiceQualityTier, required this.voiceSamplesCount});
+  const ProfileLoaded({required this.displayName, required this.email, this.photoUrl, required this.conversationsCount, required this.storiesCount, required this.voiceQualityTier, required this.voiceSamplesCount, required final  List<AudioSample> audioSamples}): _audioSamples = audioSamples;
   
 
  final  String displayName;
@@ -267,6 +267,13 @@ class ProfileLoaded implements ProfileState {
  final  int storiesCount;
  final  String voiceQualityTier;
  final  int voiceSamplesCount;
+ final  List<AudioSample> _audioSamples;
+ List<AudioSample> get audioSamples {
+  if (_audioSamples is EqualUnmodifiableListView) return _audioSamples;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_audioSamples);
+}
+
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
@@ -278,16 +285,16 @@ $ProfileLoadedCopyWith<ProfileLoaded> get copyWith => _$ProfileLoadedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileLoaded&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.email, email) || other.email == email)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.conversationsCount, conversationsCount) || other.conversationsCount == conversationsCount)&&(identical(other.storiesCount, storiesCount) || other.storiesCount == storiesCount)&&(identical(other.voiceQualityTier, voiceQualityTier) || other.voiceQualityTier == voiceQualityTier)&&(identical(other.voiceSamplesCount, voiceSamplesCount) || other.voiceSamplesCount == voiceSamplesCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileLoaded&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.email, email) || other.email == email)&&(identical(other.photoUrl, photoUrl) || other.photoUrl == photoUrl)&&(identical(other.conversationsCount, conversationsCount) || other.conversationsCount == conversationsCount)&&(identical(other.storiesCount, storiesCount) || other.storiesCount == storiesCount)&&(identical(other.voiceQualityTier, voiceQualityTier) || other.voiceQualityTier == voiceQualityTier)&&(identical(other.voiceSamplesCount, voiceSamplesCount) || other.voiceSamplesCount == voiceSamplesCount)&&const DeepCollectionEquality().equals(other._audioSamples, _audioSamples));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,displayName,email,photoUrl,conversationsCount,storiesCount,voiceQualityTier,voiceSamplesCount);
+int get hashCode => Object.hash(runtimeType,displayName,email,photoUrl,conversationsCount,storiesCount,voiceQualityTier,voiceSamplesCount,const DeepCollectionEquality().hash(_audioSamples));
 
 @override
 String toString() {
-  return 'ProfileState.loaded(displayName: $displayName, email: $email, photoUrl: $photoUrl, conversationsCount: $conversationsCount, storiesCount: $storiesCount, voiceQualityTier: $voiceQualityTier, voiceSamplesCount: $voiceSamplesCount)';
+  return 'ProfileState.loaded(displayName: $displayName, email: $email, photoUrl: $photoUrl, conversationsCount: $conversationsCount, storiesCount: $storiesCount, voiceQualityTier: $voiceQualityTier, voiceSamplesCount: $voiceSamplesCount, audioSamples: $audioSamples)';
 }
 
 
@@ -298,7 +305,7 @@ abstract mixin class $ProfileLoadedCopyWith<$Res> implements $ProfileStateCopyWi
   factory $ProfileLoadedCopyWith(ProfileLoaded value, $Res Function(ProfileLoaded) _then) = _$ProfileLoadedCopyWithImpl;
 @useResult
 $Res call({
- String displayName, String email, String? photoUrl, int conversationsCount, int storiesCount, String voiceQualityTier, int voiceSamplesCount
+ String displayName, String email, String? photoUrl, int conversationsCount, int storiesCount, String voiceQualityTier, int voiceSamplesCount, List<AudioSample> audioSamples
 });
 
 
@@ -315,7 +322,7 @@ class _$ProfileLoadedCopyWithImpl<$Res>
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? displayName = null,Object? email = null,Object? photoUrl = freezed,Object? conversationsCount = null,Object? storiesCount = null,Object? voiceQualityTier = null,Object? voiceSamplesCount = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? displayName = null,Object? email = null,Object? photoUrl = freezed,Object? conversationsCount = null,Object? storiesCount = null,Object? voiceQualityTier = null,Object? voiceSamplesCount = null,Object? audioSamples = null,}) {
   return _then(ProfileLoaded(
 displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
@@ -324,7 +331,8 @@ as String?,conversationsCount: null == conversationsCount ? _self.conversationsC
 as int,storiesCount: null == storiesCount ? _self.storiesCount : storiesCount // ignore: cast_nullable_to_non_nullable
 as int,voiceQualityTier: null == voiceQualityTier ? _self.voiceQualityTier : voiceQualityTier // ignore: cast_nullable_to_non_nullable
 as String,voiceSamplesCount: null == voiceSamplesCount ? _self.voiceSamplesCount : voiceSamplesCount // ignore: cast_nullable_to_non_nullable
-as int,
+as int,audioSamples: null == audioSamples ? _self._audioSamples : audioSamples // ignore: cast_nullable_to_non_nullable
+as List<AudioSample>,
   ));
 }
 

@@ -32,7 +32,7 @@ class _VaultPageContent extends StatelessWidget {
         title: Text(
           'Story Vault',
           style: AppTypography.headlineMedium,
-        ),
+        ), // Keep as Story Vault for the vault section
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -52,8 +52,16 @@ class _VaultPageContent extends StatelessWidget {
   }
 
   Widget _buildThemeFilters() {
-    final themes = ['All', 'Childhood', 'Love', 'Work', 'War', 'Faith', 'Lessons'];
-    
+    final themes = [
+      'All',
+      'Childhood',
+      'Love',
+      'Work',
+      'War',
+      'Faith',
+      'Lessons',
+    ];
+
     return Container(
       height: 48,
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
@@ -84,18 +92,22 @@ class _VaultPageContent extends StatelessWidget {
   Widget _buildStoryList() {
     return BlocBuilder<VaultBloc, VaultState>(
       builder: (context, state) {
-        return state.when(
+        return state.maybeWhen(
           initial: () => const SizedBox.shrink(),
           loading: () => _buildLoadingState(),
-          loaded: (stories, _) {
+          loaded: (stories, selectedTheme, searchQuery) {
             if (stories.isEmpty) {
               return _buildEmptyState(context);
             }
             return _buildStoriesList(stories);
           },
-          error: (message) => Center(
-            child: Text(message, style: AppTypography.bodyMedium),
-          ),
+          timelineLoaded: (timeline) {
+            // TODO: Implement timeline view
+            return const SizedBox.shrink();
+          },
+          error: (message) =>
+              Center(child: Text(message, style: AppTypography.bodyMedium)),
+          orElse: () => const SizedBox.shrink(),
         );
       },
     );
@@ -126,35 +138,47 @@ class _VaultPageContent extends StatelessWidget {
       itemCount: stories.length,
       separatorBuilder: (_, __) => AppSpacing.verticalMd,
       itemBuilder: (context, index) {
+        final story = stories[index];
         return AppCard(
           onTap: () {
-            context.push(Routes.storyDetailPath('story-$index'));
+            context.push(Routes.storyDetailPath(story.id));
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Story Title',
-                style: AppTypography.titleMedium,
-              ),
+              Text(story.title, style: AppTypography.titleMedium),
               AppSpacing.verticalXs,
               Text(
-                'Story preview text goes here...',
+                story.content,
                 style: AppTypography.bodyMedium.copyWith(
                   color: AppColors.textSecondary,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
+              if (story.timePeriod != null) ...[
+                AppSpacing.verticalXs,
+                Text(
+                  story.timePeriod!,
+                  style: AppTypography.labelSmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
               AppSpacing.verticalSm,
               Wrap(
                 spacing: AppSpacing.xs,
-                children: [
-                  Chip(
-                    label: Text('Theme', style: AppTypography.labelSmall),
-                    visualDensity: VisualDensity.compact,
-                  ),
-                ],
+                children: story.themes
+                    .map<Widget>(
+                      (theme) => Chip(
+                        label: Text(
+                          theme.name,
+                          style: AppTypography.labelSmall,
+                        ),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    )
+                    .toList(),
               ),
             ],
           ),

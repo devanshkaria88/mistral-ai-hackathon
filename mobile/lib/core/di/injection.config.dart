@@ -16,6 +16,13 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:google_sign_in/google_sign_in.dart' as _i116;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../features/api/generated/clients/auth_client.dart' as _i552;
+import '../../features/api/generated/clients/conversations_client.dart'
+    as _i856;
+import '../../features/api/generated/clients/family_client.dart' as _i554;
+import '../../features/api/generated/clients/persona_client.dart' as _i894;
+import '../../features/api/generated/clients/stories_client.dart' as _i1;
+import '../../features/api/generated/clients/voice_client.dart' as _i371;
 import '../../features/auth/data/datasources/auth_local_data_source.dart'
     as _i852;
 import '../../features/auth/data/datasources/auth_remote_data_source.dart'
@@ -48,10 +55,6 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
     final networkModule = _$NetworkModule();
-    gh.factory<_i794.ConversationsBloc>(() => _i794.ConversationsBloc());
-    gh.factory<_i664.PersonaBloc>(() => _i664.PersonaBloc());
-    gh.factory<_i469.ProfileBloc>(() => _i469.ProfileBloc());
-    gh.factory<_i168.VaultBloc>(() => _i168.VaultBloc());
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => registerModule.secureStorage,
     );
@@ -63,6 +66,31 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i852.AuthLocalDataSource>(
       () => _i852.AuthLocalDataSourceImpl(gh<_i558.FlutterSecureStorage>()),
+    );
+    gh.lazySingleton<_i552.AuthClient>(
+      () => registerModule.authClient(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i856.ConversationsClient>(
+      () => registerModule.conversationsClient(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i1.StoriesClient>(
+      () => registerModule.storiesClient(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i894.PersonaClient>(
+      () => registerModule.personaClient(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i554.FamilyClient>(
+      () => registerModule.familyClient(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i371.VoiceClient>(
+      () => registerModule.voiceClient(gh<_i361.Dio>()),
+    );
+    gh.factory<_i664.PersonaBloc>(
+      () => _i664.PersonaBloc(gh<_i894.PersonaClient>()),
+    );
+    gh.factory<_i168.VaultBloc>(() => _i168.VaultBloc(gh<_i1.StoriesClient>()));
+    gh.factory<_i794.ConversationsBloc>(
+      () => _i794.ConversationsBloc(gh<_i856.ConversationsClient>()),
     );
     gh.lazySingleton<_i492.FirebaseAuthDataSource>(
       () => _i492.FirebaseAuthDataSourceImpl(
@@ -99,6 +127,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i111.GetCurrentUserUseCase>(),
         gh<_i643.CheckAuthStatusUseCase>(),
         gh<_i492.FirebaseAuthDataSource>(),
+      ),
+    );
+    gh.factory<_i469.ProfileBloc>(
+      () => _i469.ProfileBloc(
+        gh<_i787.AuthRepository>(),
+        gh<_i107.AuthRemoteDataSource>(),
       ),
     );
     return this;

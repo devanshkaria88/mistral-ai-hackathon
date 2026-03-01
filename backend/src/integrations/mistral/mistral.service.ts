@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import {
+  BedrockRuntimeClient,
+  InvokeModelCommand,
+} from '@aws-sdk/client-bedrock-runtime';
 
 export interface ExplorationSuggestion {
   topic: string;
@@ -27,10 +31,47 @@ export interface ExtractedStory {
 @Injectable()
 export class MistralService {
   private readonly logger = new Logger(MistralService.name);
-  private readonly apiKey: string;
+  private readonly bedrockClient: BedrockRuntimeClient;
+  private readonly modelId: string = 'mistral.mistral-large-2407-v1:0';
 
   constructor(private readonly configService: ConfigService) {
-    this.apiKey = this.configService.get<string>('mistral.apiKey') || '';
+    const region = this.configService.get<string>('aws.region') || 'us-east-1';
+    const accessKeyId = this.configService.get<string>('aws.accessKeyId');
+    const secretAccessKey = this.configService.get<string>('aws.secretAccessKey');
+    const sessionToken = this.configService.get<string>('aws.sessionToken');
+
+    this.bedrockClient = new BedrockRuntimeClient({
+      region,
+      credentials: accessKeyId && secretAccessKey
+        ? { accessKeyId, secretAccessKey, sessionToken }
+        : undefined,
+    });
+
+    this.logger.log(`MistralService initialized with AWS Bedrock (model: ${this.modelId})`);
+  }
+
+  private async invokeBedrockModel(systemPrompt: string, userPrompt: string): Promise<string> {
+    // Mistral Large uses a different payload format than Anthropic
+    const payload = {
+      max_tokens: 4096,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+    };
+
+    const command = new InvokeModelCommand({
+      modelId: this.modelId,
+      contentType: 'application/json',
+      accept: 'application/json',
+      body: JSON.stringify(payload),
+    });
+
+    const response = await this.bedrockClient.send(command);
+    const responseBody = JSON.parse(new TextDecoder().decode(response.body));
+    
+    // Mistral response format: { choices: [{ message: { content: "..." } }] }
+    return responseBody.choices?.[0]?.message?.content || '';
   }
 
   async generateExplorationSuggestions(
@@ -94,26 +135,73 @@ export class MistralService {
   }
 
   async extractStoriesFromTranscript(transcript: string): Promise<ExtractedStory[]> {
-    this.logger.log(`Extracting stories from transcript (${transcript.length} chars)`);
+    this.logger.log(`Extracting stories from transcript (${transcript.length} chars) using AWS Bedrock`);
 
-    // TODO: Replace with actual Mistral API call
-    // Use structured output to extract stories, people, places, themes
+    const systemPrompt = `You are an expert at extracting meaningful life stories from conversation transcripts.
+Your task is to identify distinct stories, memories, or significant life events mentioned in the conversation.
 
-    return [
-      {
-        title: 'Meeting Arthur at the Dance Hall',
-        content:
-          "It was 1962, and I was just nineteen. My friend Betty dragged me to the Palais dance hall on a Saturday night. I didn't want to go, but she insisted. That's where I saw Arthur for the first time. He was standing by the bar, looking nervous in his best suit. When our eyes met, I knew. He asked me to dance, and I said yes. We danced every Saturday after that.",
-        timePeriod: '1962',
-        emotionalTone: 'nostalgic, romantic',
-        people: [
-          { name: 'Arthur', relationship: 'husband' },
-          { name: 'Betty', relationship: 'friend' },
-        ],
-        places: [{ name: 'Palais Dance Hall', description: 'Local dance venue' }],
-        themes: ['love', 'youth', 'romance'],
-      },
-    ];
+For each story you extract, provide:
+- A compelling title
+- The full story content (expand on what was said, making it a complete narrative)
+- The time period (if mentioned or can be inferred)
+- The emotional tone (e.g., nostalgic, joyful, bittersweet, proud)
+- People mentioned (with their relationship to the speaker if known)
+- Places mentioned (with brief descriptions if available)
+- Themes (e.g., love, family, career, adventure, loss, triumph)
+
+Return your response as a JSON object with a "stories" array. If no clear stories are found, return {"stories": []}.`;
+
+    const userPrompt = `Extract all distinct stories and memories from this conversation transcript:
+
+${transcript}
+
+Return a JSON object with this structure:
+{
+  "stories": [
+    {
+      "title": "Story title",
+      "content": "Full story narrative",
+      "timePeriod": "Year or decade",
+      "emotionalTone": "Emotional tone",
+      "people": [{"name": "Name", "relationship": "Relationship"}],
+      "places": [{"name": "Place name", "description": "Brief description"}],
+      "themes": ["theme1", "theme2"]
+    }
+  ]
+}`;
+
+    try {
+      const content = await this.invokeBedrockModel(systemPrompt, userPrompt);
+
+      if (!content) {
+        this.logger.warn('No content in Bedrock response');
+        return [];
+      }
+
+      // Extract JSON from the response (Claude may wrap it in markdown)
+      let jsonStr = content;
+      const jsonMatch = content.match(/```json\s*([\s\S]*?)\s*```/);
+      if (jsonMatch) {
+        jsonStr = jsonMatch[1];
+      } else {
+        // Try to find JSON object directly
+        const objMatch = content.match(/\{[\s\S]*\}/);
+        if (objMatch) {
+          jsonStr = objMatch[0];
+        }
+      }
+
+      // Parse the JSON response
+      const parsed = JSON.parse(jsonStr);
+      const stories = Array.isArray(parsed) ? parsed : (parsed.stories || []);
+      
+      this.logger.log(`Extracted ${stories.length} stories from transcript`);
+      return stories;
+
+    } catch (error) {
+      this.logger.error(`Failed to extract stories: ${error.message}`);
+      return [];
+    }
   }
 
   async generateFirstMessage(

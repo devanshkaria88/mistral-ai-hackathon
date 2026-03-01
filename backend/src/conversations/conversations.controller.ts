@@ -2,6 +2,8 @@ import {
   Controller,
   Post,
   Get,
+  Patch,
+  Delete,
   Param,
   Body,
   UseGuards,
@@ -21,6 +23,8 @@ import {
   StartConversationResponseDto,
   EndConversationResponseDto,
   ConversationResponseDto,
+  PresignedUrlResponseDto,
+  UpdateElevenLabsIdDto,
 } from './dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
@@ -83,8 +87,31 @@ export class ConversationsController {
     return this.conversationsService.endConversation(id);
   }
 
+  @Patch(':id/elevenlabs-id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ 
+    summary: 'Update ElevenLabs conversation ID',
+    description: 'Called by mobile app when ElevenLabs session connects and returns the real conversation ID'
+  })
+  @ApiParam({ name: 'id', description: 'Our internal conversation ID' })
+  @ApiResponse({
+    status: 204,
+    description: 'ElevenLabs ID updated successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Conversation not found',
+    type: ErrorResponseDto,
+  })
+  async updateElevenLabsId(
+    @Param('id') id: string,
+    @Body() dto: UpdateElevenLabsIdDto,
+  ): Promise<void> {
+    return this.conversationsService.updateElevenLabsId(id, dto.elevenLabsConversationId);
+  }
+
   @Get()
-  @ApiOperation({ summary: 'List all conversations for the current user' })
+  @ApiOperation({ summary: 'List all companion conversations for the current user' })
   @ApiResponse({
     status: 200,
     description: 'List of conversations',
@@ -99,6 +126,29 @@ export class ConversationsController {
     @CurrentUser() user: User,
   ): Promise<ConversationResponseDto[]> {
     return this.conversationsService.findAll(user.id);
+  }
+
+  @Get('persona/:personaUserId')
+  @ApiOperation({ 
+    summary: 'List all persona conversations with a specific family member',
+    description: 'Returns conversations where the current user talked to the specified family member\'s persona'
+  })
+  @ApiParam({ name: 'personaUserId', description: 'The user ID of the family member whose persona was called' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of persona conversations',
+    type: [ConversationResponseDto],
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: ErrorResponseDto,
+  })
+  async findPersonaConversations(
+    @CurrentUser() user: User,
+    @Param('personaUserId') personaUserId: string,
+  ): Promise<ConversationResponseDto[]> {
+    return this.conversationsService.findPersonaConversations(user.id, personaUserId);
   }
 
   @Get(':id')
@@ -121,5 +171,59 @@ export class ConversationsController {
   })
   async findOne(@Param('id') id: string): Promise<ConversationResponseDto> {
     return this.conversationsService.findOne(id);
+  }
+
+  @Get(':id/audio-url')
+  @ApiOperation({ summary: 'Get presigned URL for conversation audio' })
+  @ApiParam({ name: 'id', description: 'Conversation ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Presigned URL for audio access',
+    type: PresignedUrlResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Conversation or audio not found',
+    type: ErrorResponseDto,
+  })
+  async getAudioUrl(@Param('id') id: string): Promise<PresignedUrlResponseDto> {
+    return this.conversationsService.getAudioPresignedUrl(id);
+  }
+
+  @Get(':id/transcript-url')
+  @ApiOperation({ summary: 'Get presigned URL for conversation transcript' })
+  @ApiParam({ name: 'id', description: 'Conversation ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Presigned URL for transcript access',
+    type: PresignedUrlResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Conversation or transcript not found',
+    type: ErrorResponseDto,
+  })
+  async getTranscriptUrl(@Param('id') id: string): Promise<PresignedUrlResponseDto> {
+    return this.conversationsService.getTranscriptPresignedUrl(id);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a conversation' })
+  @ApiParam({ name: 'id', description: 'Conversation ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Conversation deleted successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Conversation not found',
+    type: ErrorResponseDto,
+  })
+  async deleteConversation(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+  ): Promise<{ message: string }> {
+    await this.conversationsService.deleteConversation(user.id, id);
+    return { message: 'Conversation deleted successfully' };
   }
 }

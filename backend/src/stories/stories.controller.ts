@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Post,
+  Delete,
   Param,
   Query,
   UseGuards,
@@ -145,5 +146,25 @@ export class StoriesController {
     @CurrentUser() user: User,
   ): Promise<BookmarkResponseDto> {
     return this.storiesService.toggleBookmark(id, user.id);
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a story' })
+  @ApiParam({ name: 'id', description: 'Story ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Story deleted successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Story not found',
+    type: ErrorResponseDto,
+  })
+  async deleteStory(
+    @CurrentUser() user: User,
+    @Param('id') id: string,
+  ): Promise<{ message: string }> {
+    await this.storiesService.deleteStory(user.id, id);
+    return { message: 'Story deleted successfully' };
   }
 }

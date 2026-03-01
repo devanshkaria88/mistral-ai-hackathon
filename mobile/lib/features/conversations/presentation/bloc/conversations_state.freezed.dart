@@ -134,14 +134,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<dynamic> conversations)?  loaded,TResult Function()?  startingSession,TResult Function( String conversationId,  String sessionUrl)?  sessionStarted,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<dynamic> conversations)?  loaded,TResult Function()?  startingSession,TResult Function( String conversationId,  String conversationToken,  DynamicVariables dynamicVariables)?  sessionStarted,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ConversationsInitial() when initial != null:
 return initial();case ConversationsLoading() when loading != null:
 return loading();case ConversationsLoaded() when loaded != null:
 return loaded(_that.conversations);case StartingSession() when startingSession != null:
 return startingSession();case SessionStarted() when sessionStarted != null:
-return sessionStarted(_that.conversationId,_that.sessionUrl);case ConversationsError() when error != null:
+return sessionStarted(_that.conversationId,_that.conversationToken,_that.dynamicVariables);case ConversationsError() when error != null:
 return error(_that.message);case _:
   return orElse();
 
@@ -160,14 +160,14 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<dynamic> conversations)  loaded,required TResult Function()  startingSession,required TResult Function( String conversationId,  String sessionUrl)  sessionStarted,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<dynamic> conversations)  loaded,required TResult Function()  startingSession,required TResult Function( String conversationId,  String conversationToken,  DynamicVariables dynamicVariables)  sessionStarted,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case ConversationsInitial():
 return initial();case ConversationsLoading():
 return loading();case ConversationsLoaded():
 return loaded(_that.conversations);case StartingSession():
 return startingSession();case SessionStarted():
-return sessionStarted(_that.conversationId,_that.sessionUrl);case ConversationsError():
+return sessionStarted(_that.conversationId,_that.conversationToken,_that.dynamicVariables);case ConversationsError():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -185,14 +185,14 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<dynamic> conversations)?  loaded,TResult? Function()?  startingSession,TResult? Function( String conversationId,  String sessionUrl)?  sessionStarted,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<dynamic> conversations)?  loaded,TResult? Function()?  startingSession,TResult? Function( String conversationId,  String conversationToken,  DynamicVariables dynamicVariables)?  sessionStarted,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case ConversationsInitial() when initial != null:
 return initial();case ConversationsLoading() when loading != null:
 return loading();case ConversationsLoaded() when loaded != null:
 return loaded(_that.conversations);case StartingSession() when startingSession != null:
 return startingSession();case SessionStarted() when sessionStarted != null:
-return sessionStarted(_that.conversationId,_that.sessionUrl);case ConversationsError() when error != null:
+return sessionStarted(_that.conversationId,_that.conversationToken,_that.dynamicVariables);case ConversationsError() when error != null:
 return error(_that.message);case _:
   return null;
 
@@ -373,11 +373,12 @@ String toString() {
 
 
 class SessionStarted implements ConversationsState {
-  const SessionStarted({required this.conversationId, required this.sessionUrl});
+  const SessionStarted({required this.conversationId, required this.conversationToken, required this.dynamicVariables});
   
 
  final  String conversationId;
- final  String sessionUrl;
+ final  String conversationToken;
+ final  DynamicVariables dynamicVariables;
 
 /// Create a copy of ConversationsState
 /// with the given fields replaced by the non-null parameter values.
@@ -389,16 +390,16 @@ $SessionStartedCopyWith<SessionStarted> get copyWith => _$SessionStartedCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionStarted&&(identical(other.conversationId, conversationId) || other.conversationId == conversationId)&&(identical(other.sessionUrl, sessionUrl) || other.sessionUrl == sessionUrl));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionStarted&&(identical(other.conversationId, conversationId) || other.conversationId == conversationId)&&(identical(other.conversationToken, conversationToken) || other.conversationToken == conversationToken)&&(identical(other.dynamicVariables, dynamicVariables) || other.dynamicVariables == dynamicVariables));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,conversationId,sessionUrl);
+int get hashCode => Object.hash(runtimeType,conversationId,conversationToken,dynamicVariables);
 
 @override
 String toString() {
-  return 'ConversationsState.sessionStarted(conversationId: $conversationId, sessionUrl: $sessionUrl)';
+  return 'ConversationsState.sessionStarted(conversationId: $conversationId, conversationToken: $conversationToken, dynamicVariables: $dynamicVariables)';
 }
 
 
@@ -409,7 +410,7 @@ abstract mixin class $SessionStartedCopyWith<$Res> implements $ConversationsStat
   factory $SessionStartedCopyWith(SessionStarted value, $Res Function(SessionStarted) _then) = _$SessionStartedCopyWithImpl;
 @useResult
 $Res call({
- String conversationId, String sessionUrl
+ String conversationId, String conversationToken, DynamicVariables dynamicVariables
 });
 
 
@@ -426,11 +427,12 @@ class _$SessionStartedCopyWithImpl<$Res>
 
 /// Create a copy of ConversationsState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? conversationId = null,Object? sessionUrl = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? conversationId = null,Object? conversationToken = null,Object? dynamicVariables = null,}) {
   return _then(SessionStarted(
 conversationId: null == conversationId ? _self.conversationId : conversationId // ignore: cast_nullable_to_non_nullable
-as String,sessionUrl: null == sessionUrl ? _self.sessionUrl : sessionUrl // ignore: cast_nullable_to_non_nullable
-as String,
+as String,conversationToken: null == conversationToken ? _self.conversationToken : conversationToken // ignore: cast_nullable_to_non_nullable
+as String,dynamicVariables: null == dynamicVariables ? _self.dynamicVariables : dynamicVariables // ignore: cast_nullable_to_non_nullable
+as DynamicVariables,
   ));
 }
 

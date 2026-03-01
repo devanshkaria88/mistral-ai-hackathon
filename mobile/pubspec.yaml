@@ -1,5 +1,5 @@
 name: memory_vault
-description: "MemoryVault - AI voice companion preserving life stories"
+description: "Resurrect - Bring loved ones back to life through AI"
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -45,6 +45,8 @@ dependencies:
   # Utility
   intl: ^0.20.2
   logger: ^2.5.0
+  elevenlabs_agents: ^0.3.1
+  permission_handler: ^12.0.1
 
 dev_dependencies:
   flutter_test:

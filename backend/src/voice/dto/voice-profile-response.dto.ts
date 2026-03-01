@@ -1,6 +1,20 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { VoiceQualityTier } from '../../common/types/voice-quality-tier.enum';
 
+export class AudioSampleDto {
+  @ApiProperty({ description: 'S3 key for the audio sample' })
+  key: string;
+
+  @ApiProperty({ description: 'Duration in seconds' })
+  durationSeconds: number;
+
+  @ApiProperty({ description: 'Timestamp when recorded' })
+  timestamp: number;
+
+  @ApiPropertyOptional({ description: 'Presigned URL for playback' })
+  playbackUrl?: string;
+}
+
 export class VoiceProfileResponseDto {
   @ApiProperty({
     description: 'Voice profile ID',
@@ -44,4 +58,10 @@ export class VoiceProfileResponseDto {
     example: '2026-02-28T14:30:00Z',
   })
   lastUpdatedAt?: Date;
+
+  @ApiPropertyOptional({
+    description: 'Audio samples with playback URLs',
+    type: [AudioSampleDto],
+  })
+  audioSamples?: AudioSampleDto[];
 }

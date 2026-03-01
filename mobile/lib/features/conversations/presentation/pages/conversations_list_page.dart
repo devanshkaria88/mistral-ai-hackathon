@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/theme.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../core/router/routes.dart';
+import '../../../../core/router/app_router.dart';
 import '../../../../core/di/injection.dart';
 import '../bloc/conversations_bloc.dart';
 import '../bloc/conversations_event.dart';
@@ -15,8 +16,9 @@ class ConversationsListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<ConversationsBloc>()
-        ..add(const ConversationsEvent.loadConversations()),
+      create: (_) =>
+          getIt<ConversationsBloc>()
+            ..add(const ConversationsEvent.loadConversations()),
       child: const _ConversationsListContent(),
     );
   }
@@ -30,23 +32,32 @@ class _ConversationsListContent extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: Text(
-          'Conversations',
-          style: AppTypography.headlineMedium,
-        ),
+        title: Text('Conversations', style: AppTypography.headlineMedium),
       ),
       body: BlocConsumer<ConversationsBloc, ConversationsState>(
         listener: (context, state) {
           state.maybeWhen(
-            sessionStarted: (conversationId, sessionUrl) {
-              context.push(
-                '${Routes.conversationSessionPath(conversationId)}?sessionUrl=$sessionUrl',
-              );
-            },
+            sessionStarted:
+                (conversationId, conversationToken, dynamicVariables) {
+                  // Pass session data via GoRouter extra parameter
+                  context.push(
+                    Routes.conversationSessionPath(conversationId),
+                    extra: ConversationSessionData(
+                      conversationToken: conversationToken,
+                      dynamicVariables: {
+                        'user_name': dynamicVariables.userName,
+                        'context_block': dynamicVariables.contextBlock,
+                        'stories_summary': dynamicVariables.storiesSummary,
+                        'exploration_suggestions':
+                            dynamicVariables.explorationSuggestions,
+                      },
+                    ),
+                  );
+                },
             error: (message) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(message)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(message)));
             },
             orElse: () {},
           );
@@ -74,8 +85,8 @@ class _ConversationsListContent extends StatelessWidget {
       child: AppButton(
         onPressed: () {
           context.read<ConversationsBloc>().add(
-                const ConversationsEvent.startConversation(),
-              );
+            const ConversationsEvent.startCompanionMode(),
+          );
         },
         label: 'Start New Conversation',
         icon: Icons.mic,
@@ -124,9 +135,13 @@ class _ConversationsListContent extends StatelessWidget {
       itemCount: conversations.length,
       separatorBuilder: (_, __) => AppSpacing.verticalMd,
       itemBuilder: (context, index) {
+        final conversation = conversations[index];
+        final dateStr = _formatDate(conversation.createdAt);
+        final storiesCount = conversation.storiesCount?.toInt() ?? 0;
+
         return AppCard(
           onTap: () {
-            context.push(Routes.conversationDetailPath('conv-$index'));
+            context.push(Routes.conversationDetailPath(conversation.id));
           },
           child: Row(
             children: [
@@ -137,34 +152,55 @@ class _ConversationsListContent extends StatelessWidget {
                   color: AppColors.accentLight,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.chat_bubble,
-                  color: AppColors.accent,
-                ),
+                child: const Icon(Icons.chat_bubble, color: AppColors.accent),
               ),
               AppSpacing.horizontalMd,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Conversation ${index + 1}',
-                      style: AppTypography.titleSmall,
-                    ),
+                    Text('Conversation', style: AppTypography.titleSmall),
                     AppSpacing.verticalXxs,
                     Text(
-                      'Feb 28, 2026 • 3 stories',
+                      '$dateStr • $storiesCount ${storiesCount == 1 ? 'story' : 'stories'}',
                       style: AppTypography.bodySmall,
                     ),
                   ],
                 ),
               ),
-              _buildStatusChip('Processed'),
+              _buildStatusChip(_getStatusLabel(conversation.status)),
             ],
           ),
         );
       },
     );
+  }
+
+  String _formatDate(DateTime date) {
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return '${months[date.month - 1]} ${date.day}, ${date.year}';
+  }
+
+  String _getStatusLabel(dynamic status) {
+    final statusStr = status.toString().toLowerCase();
+    if (statusStr.contains('processed')) return 'Processed';
+    if (statusStr.contains('processing')) return 'Processing';
+    if (statusStr.contains('active')) return 'Active';
+    if (statusStr.contains('failed')) return 'Failed';
+    return 'Pending';
   }
 
   Widget _buildStatusChip(String status) {
@@ -179,9 +215,7 @@ class _ConversationsListContent extends StatelessWidget {
       ),
       child: Text(
         status,
-        style: AppTypography.labelSmall.copyWith(
-          color: AppColors.success,
-        ),
+        style: AppTypography.labelSmall.copyWith(color: AppColors.success),
       ),
     );
   }

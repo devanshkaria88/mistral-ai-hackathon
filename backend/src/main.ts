@@ -5,7 +5,10 @@ import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bodyParser: true,
+    rawBody: true,
+  });
   const configService = app.get(ConfigService);
 
   // Global prefix
@@ -17,11 +20,15 @@ async function bootstrap() {
     credentials: true,
   });
 
+  // Increase body size limit for webhooks (ElevenLabs sends large payloads)
+  app.use(require('body-parser').json({ limit: '10mb' }));
+  app.use(require('body-parser').urlencoded({ limit: '10mb', extended: true }));
+
   // Validation pipe
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
+      forbidNonWhitelisted: false, // Allow extra fields (needed for ElevenLabs webhook)
       transform: true,
       transformOptions: {
         enableImplicitConversion: true,

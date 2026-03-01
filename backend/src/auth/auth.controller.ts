@@ -85,4 +85,24 @@ export class AuthController {
   async getMe(@CurrentUser() user: User): Promise<UserResponseDto> {
     return this.authService.mapUserToResponse(user);
   }
+
+  @Get('me/stats')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user profile stats' })
+  @ApiResponse({
+    status: 200,
+    description: 'User profile stats including counts',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: ErrorResponseDto,
+  })
+  async getMyStats(@CurrentUser() user: User): Promise<{
+    conversationsCount: number;
+    storiesCount: number;
+  }> {
+    return this.authService.getUserStats(user.id);
+  }
 }

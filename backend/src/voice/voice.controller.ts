@@ -2,6 +2,8 @@ import {
   Controller,
   Get,
   Post,
+  Delete,
+  Body,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -39,7 +41,7 @@ export class VoiceController {
     description: 'Unauthorized',
     type: ErrorResponseDto,
   })
-  async getProfile(@CurrentUser() user: User): Promise<VoiceProfileResponseDto> {
+  async getProfile(@CurrentUser() user: User): Promise<VoiceProfileResponseDto | null> {
     return this.voiceService.getProfile(user.id);
   }
 
@@ -57,5 +59,23 @@ export class VoiceController {
   })
   async updateClone(@CurrentUser() user: User): Promise<UpdateCloneResponseDto> {
     return this.voiceService.updateClone(user.id);
+  }
+
+  @Delete('samples')
+  @ApiOperation({ summary: 'Delete an audio sample from voice profile' })
+  @ApiResponse({
+    status: 200,
+    description: 'Audio sample deleted',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+    type: ErrorResponseDto,
+  })
+  async deleteAudioSample(
+    @CurrentUser() user: User,
+    @Body() body: { sampleKey: string },
+  ): Promise<{ success: boolean; message: string }> {
+    return this.voiceService.deleteAudioSample(user.id, body.sampleKey);
   }
 }

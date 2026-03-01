@@ -131,7 +131,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<dynamic> messages)?  loaded,TResult Function()?  asking,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<PersonaMessage> messages)?  loaded,TResult Function()?  asking,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case PersonaInitial() when initial != null:
 return initial();case PersonaLoading() when loading != null:
@@ -156,7 +156,7 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<dynamic> messages)  loaded,required TResult Function()  asking,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<PersonaMessage> messages)  loaded,required TResult Function()  asking,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case PersonaInitial():
 return initial();case PersonaLoading():
@@ -180,7 +180,7 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<dynamic> messages)?  loaded,TResult? Function()?  asking,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<PersonaMessage> messages)?  loaded,TResult? Function()?  asking,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case PersonaInitial() when initial != null:
 return initial();case PersonaLoading() when loading != null:
@@ -263,11 +263,11 @@ String toString() {
 
 
 class PersonaLoaded implements PersonaState {
-  const PersonaLoaded({required final  List<dynamic> messages}): _messages = messages;
+  const PersonaLoaded({required final  List<PersonaMessage> messages}): _messages = messages;
   
 
- final  List<dynamic> _messages;
- List<dynamic> get messages {
+ final  List<PersonaMessage> _messages;
+ List<PersonaMessage> get messages {
   if (_messages is EqualUnmodifiableListView) return _messages;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_messages);
@@ -304,7 +304,7 @@ abstract mixin class $PersonaLoadedCopyWith<$Res> implements $PersonaStateCopyWi
   factory $PersonaLoadedCopyWith(PersonaLoaded value, $Res Function(PersonaLoaded) _then) = _$PersonaLoadedCopyWithImpl;
 @useResult
 $Res call({
- List<dynamic> messages
+ List<PersonaMessage> messages
 });
 
 
@@ -324,7 +324,7 @@ class _$PersonaLoadedCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? messages = null,}) {
   return _then(PersonaLoaded(
 messages: null == messages ? _self._messages : messages // ignore: cast_nullable_to_non_nullable
-as List<dynamic>,
+as List<PersonaMessage>,
   ));
 }
 

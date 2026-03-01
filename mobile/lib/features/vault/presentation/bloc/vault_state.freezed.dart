@@ -55,13 +55,14 @@ extension VaultStatePatterns on VaultState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( VaultInitial value)?  initial,TResult Function( VaultLoading value)?  loading,TResult Function( VaultLoaded value)?  loaded,TResult Function( VaultError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( VaultInitial value)?  initial,TResult Function( VaultLoading value)?  loading,TResult Function( VaultLoaded value)?  loaded,TResult Function( VaultTimelineLoaded value)?  timelineLoaded,TResult Function( VaultError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case VaultInitial() when initial != null:
 return initial(_that);case VaultLoading() when loading != null:
 return loading(_that);case VaultLoaded() when loaded != null:
-return loaded(_that);case VaultError() when error != null:
+return loaded(_that);case VaultTimelineLoaded() when timelineLoaded != null:
+return timelineLoaded(_that);case VaultError() when error != null:
 return error(_that);case _:
   return orElse();
 
@@ -80,13 +81,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( VaultInitial value)  initial,required TResult Function( VaultLoading value)  loading,required TResult Function( VaultLoaded value)  loaded,required TResult Function( VaultError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( VaultInitial value)  initial,required TResult Function( VaultLoading value)  loading,required TResult Function( VaultLoaded value)  loaded,required TResult Function( VaultTimelineLoaded value)  timelineLoaded,required TResult Function( VaultError value)  error,}){
 final _that = this;
 switch (_that) {
 case VaultInitial():
 return initial(_that);case VaultLoading():
 return loading(_that);case VaultLoaded():
-return loaded(_that);case VaultError():
+return loaded(_that);case VaultTimelineLoaded():
+return timelineLoaded(_that);case VaultError():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +106,14 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( VaultInitial value)?  initial,TResult? Function( VaultLoading value)?  loading,TResult? Function( VaultLoaded value)?  loaded,TResult? Function( VaultError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( VaultInitial value)?  initial,TResult? Function( VaultLoading value)?  loading,TResult? Function( VaultLoaded value)?  loaded,TResult? Function( VaultTimelineLoaded value)?  timelineLoaded,TResult? Function( VaultError value)?  error,}){
 final _that = this;
 switch (_that) {
 case VaultInitial() when initial != null:
 return initial(_that);case VaultLoading() when loading != null:
 return loading(_that);case VaultLoaded() when loaded != null:
-return loaded(_that);case VaultError() when error != null:
+return loaded(_that);case VaultTimelineLoaded() when timelineLoaded != null:
+return timelineLoaded(_that);case VaultError() when error != null:
 return error(_that);case _:
   return null;
 
@@ -128,12 +131,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<dynamic> stories,  String? selectedTheme)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Story> stories,  String? selectedTheme,  String? searchQuery)?  loaded,TResult Function( Timeline timeline)?  timelineLoaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case VaultInitial() when initial != null:
 return initial();case VaultLoading() when loading != null:
 return loading();case VaultLoaded() when loaded != null:
-return loaded(_that.stories,_that.selectedTheme);case VaultError() when error != null:
+return loaded(_that.stories,_that.selectedTheme,_that.searchQuery);case VaultTimelineLoaded() when timelineLoaded != null:
+return timelineLoaded(_that.timeline);case VaultError() when error != null:
 return error(_that.message);case _:
   return orElse();
 
@@ -152,12 +156,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<dynamic> stories,  String? selectedTheme)  loaded,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Story> stories,  String? selectedTheme,  String? searchQuery)  loaded,required TResult Function( Timeline timeline)  timelineLoaded,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case VaultInitial():
 return initial();case VaultLoading():
 return loading();case VaultLoaded():
-return loaded(_that.stories,_that.selectedTheme);case VaultError():
+return loaded(_that.stories,_that.selectedTheme,_that.searchQuery);case VaultTimelineLoaded():
+return timelineLoaded(_that.timeline);case VaultError():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +180,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<dynamic> stories,  String? selectedTheme)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Story> stories,  String? selectedTheme,  String? searchQuery)?  loaded,TResult? Function( Timeline timeline)?  timelineLoaded,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case VaultInitial() when initial != null:
 return initial();case VaultLoading() when loading != null:
 return loading();case VaultLoaded() when loaded != null:
-return loaded(_that.stories,_that.selectedTheme);case VaultError() when error != null:
+return loaded(_that.stories,_that.selectedTheme,_that.searchQuery);case VaultTimelineLoaded() when timelineLoaded != null:
+return timelineLoaded(_that.timeline);case VaultError() when error != null:
 return error(_that.message);case _:
   return null;
 
@@ -257,17 +263,18 @@ String toString() {
 
 
 class VaultLoaded implements VaultState {
-  const VaultLoaded({required final  List<dynamic> stories, this.selectedTheme}): _stories = stories;
+  const VaultLoaded({required final  List<Story> stories, this.selectedTheme, this.searchQuery}): _stories = stories;
   
 
- final  List<dynamic> _stories;
- List<dynamic> get stories {
+ final  List<Story> _stories;
+ List<Story> get stories {
   if (_stories is EqualUnmodifiableListView) return _stories;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_stories);
 }
 
  final  String? selectedTheme;
+ final  String? searchQuery;
 
 /// Create a copy of VaultState
 /// with the given fields replaced by the non-null parameter values.
@@ -279,16 +286,16 @@ $VaultLoadedCopyWith<VaultLoaded> get copyWith => _$VaultLoadedCopyWithImpl<Vaul
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VaultLoaded&&const DeepCollectionEquality().equals(other._stories, _stories)&&(identical(other.selectedTheme, selectedTheme) || other.selectedTheme == selectedTheme));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VaultLoaded&&const DeepCollectionEquality().equals(other._stories, _stories)&&(identical(other.selectedTheme, selectedTheme) || other.selectedTheme == selectedTheme)&&(identical(other.searchQuery, searchQuery) || other.searchQuery == searchQuery));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_stories),selectedTheme);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_stories),selectedTheme,searchQuery);
 
 @override
 String toString() {
-  return 'VaultState.loaded(stories: $stories, selectedTheme: $selectedTheme)';
+  return 'VaultState.loaded(stories: $stories, selectedTheme: $selectedTheme, searchQuery: $searchQuery)';
 }
 
 
@@ -299,7 +306,7 @@ abstract mixin class $VaultLoadedCopyWith<$Res> implements $VaultStateCopyWith<$
   factory $VaultLoadedCopyWith(VaultLoaded value, $Res Function(VaultLoaded) _then) = _$VaultLoadedCopyWithImpl;
 @useResult
 $Res call({
- List<dynamic> stories, String? selectedTheme
+ List<Story> stories, String? selectedTheme, String? searchQuery
 });
 
 
@@ -316,11 +323,78 @@ class _$VaultLoadedCopyWithImpl<$Res>
 
 /// Create a copy of VaultState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? stories = null,Object? selectedTheme = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? stories = null,Object? selectedTheme = freezed,Object? searchQuery = freezed,}) {
   return _then(VaultLoaded(
 stories: null == stories ? _self._stories : stories // ignore: cast_nullable_to_non_nullable
-as List<dynamic>,selectedTheme: freezed == selectedTheme ? _self.selectedTheme : selectedTheme // ignore: cast_nullable_to_non_nullable
+as List<Story>,selectedTheme: freezed == selectedTheme ? _self.selectedTheme : selectedTheme // ignore: cast_nullable_to_non_nullable
+as String?,searchQuery: freezed == searchQuery ? _self.searchQuery : searchQuery // ignore: cast_nullable_to_non_nullable
 as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class VaultTimelineLoaded implements VaultState {
+  const VaultTimelineLoaded({required this.timeline});
+  
+
+ final  Timeline timeline;
+
+/// Create a copy of VaultState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$VaultTimelineLoadedCopyWith<VaultTimelineLoaded> get copyWith => _$VaultTimelineLoadedCopyWithImpl<VaultTimelineLoaded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VaultTimelineLoaded&&(identical(other.timeline, timeline) || other.timeline == timeline));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,timeline);
+
+@override
+String toString() {
+  return 'VaultState.timelineLoaded(timeline: $timeline)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $VaultTimelineLoadedCopyWith<$Res> implements $VaultStateCopyWith<$Res> {
+  factory $VaultTimelineLoadedCopyWith(VaultTimelineLoaded value, $Res Function(VaultTimelineLoaded) _then) = _$VaultTimelineLoadedCopyWithImpl;
+@useResult
+$Res call({
+ Timeline timeline
+});
+
+
+
+
+}
+/// @nodoc
+class _$VaultTimelineLoadedCopyWithImpl<$Res>
+    implements $VaultTimelineLoadedCopyWith<$Res> {
+  _$VaultTimelineLoadedCopyWithImpl(this._self, this._then);
+
+  final VaultTimelineLoaded _self;
+  final $Res Function(VaultTimelineLoaded) _then;
+
+/// Create a copy of VaultState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? timeline = null,}) {
+  return _then(VaultTimelineLoaded(
+timeline: null == timeline ? _self.timeline : timeline // ignore: cast_nullable_to_non_nullable
+as Timeline,
   ));
 }
 

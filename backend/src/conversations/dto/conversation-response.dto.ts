@@ -1,6 +1,32 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ConversationStatus } from '../../common/types/conversation-status.enum';
 
+export class ConversationStoryDto {
+  @ApiProperty()
+  id: string;
+
+  @ApiProperty()
+  title: string;
+
+  @ApiProperty()
+  content: string;
+
+  @ApiPropertyOptional()
+  timePeriod?: string;
+
+  @ApiPropertyOptional()
+  emotionalTone?: string;
+
+  @ApiPropertyOptional({ type: [Object] })
+  themes?: { id: string; name: string; slug: string }[];
+
+  @ApiPropertyOptional({ type: [Object] })
+  people?: { id: string; name: string; relationship: string }[];
+
+  @ApiPropertyOptional({ type: [Object] })
+  places?: { id: string; name: string; description?: string }[];
+}
+
 export class ConversationResponseDto {
   @ApiProperty({
     description: 'Unique identifier for the conversation',
@@ -50,4 +76,22 @@ export class ConversationResponseDto {
     example: 3,
   })
   storiesCount: number;
+
+  @ApiPropertyOptional({
+    description: 'Stories extracted from this conversation',
+    type: [ConversationStoryDto],
+  })
+  stories?: ConversationStoryDto[];
+
+  @ApiPropertyOptional({
+    description: 'Duration of the conversation in minutes',
+    example: 15,
+  })
+  durationMinutes?: number;
+
+  @ApiPropertyOptional({
+    description: 'Presigned URL to play the call recording',
+    example: 'https://s3.amazonaws.com/bucket/audio.mp3?...',
+  })
+  recordingUrl?: string;
 }

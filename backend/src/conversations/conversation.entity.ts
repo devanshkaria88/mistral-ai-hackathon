@@ -11,10 +11,25 @@ import { ConversationStatus } from '../common/types/conversation-status.enum';
 import { User } from '../users/user.entity';
 import { Story } from '../stories/story.entity';
 
+export enum ConversationMode {
+  COMPANION = 'companion',
+  PERSONA = 'persona',
+}
+
 @Entity('conversations')
 export class Conversation extends BaseEntity {
   @Column({ name: 'user_id', type: 'uuid' })
   userId: string;
+
+  @Column({
+    type: 'varchar',
+    length: 20,
+    default: ConversationMode.COMPANION,
+  })
+  mode: ConversationMode;
+
+  @Column({ name: 'persona_user_id', type: 'uuid', nullable: true })
+  personaUserId: string | null;
 
   @Column({ name: 'elevenlabs_session_id', nullable: true })
   elevenLabsSessionId: string;

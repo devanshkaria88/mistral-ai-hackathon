@@ -17,6 +17,9 @@ export class VoiceProfile extends BaseEntity {
   @Column({ name: 'total_audio_seconds', type: 'float', default: 0 })
   totalAudioSeconds: number;
 
+  @Column({ name: 'audio_segment_keys', type: 'jsonb', nullable: true })
+  audioSegmentKeys: { key: string; durationSeconds: number; timestamp: number }[];
+
   @Column({
     name: 'quality_tier',
     type: 'enum',

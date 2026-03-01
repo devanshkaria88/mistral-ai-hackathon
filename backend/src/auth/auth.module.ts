@@ -2,11 +2,14 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { UsersModule } from '../users/users.module';
 import { FirebaseModule } from '../integrations/firebase/firebase.module';
+import { Conversation } from '../conversations/conversation.entity';
+import { Story } from '../stories/story.entity';
 
 @Module({
   imports: [
@@ -21,6 +24,7 @@ import { FirebaseModule } from '../integrations/firebase/firebase.module';
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([Conversation, Story]),
     UsersModule,
     FirebaseModule,
   ],

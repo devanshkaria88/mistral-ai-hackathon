@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "150529826360",
+    "project_id": "ressurect-ai",
+    "storage_bucket": "ressurect-ai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150529826360:android:ccc90494dd7f7d453350cd",
+        "android_client_info": {
+          "package_name": "com.eightspheres.ressurect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "150529826360-ma9n7jid7ulcm3m0tbpi7toat3vr1dj8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtgo82fwkCHsf32XlwAKCJteD-cY3bRxs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150529826360-ma9n7jid7ulcm3m0tbpi7toat3vr1dj8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "150529826360-p4jf4329is7kj09c9u2sjjovtpia476c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.memoryvault.memoryVault"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150529826360:android:3b4baa0ef7c2bf063350cd",
+        "android_client_info": {
+          "package_name": "com.memoryvault.memory_vault"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "150529826360-ma9n7jid7ulcm3m0tbpi7toat3vr1dj8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtgo82fwkCHsf32XlwAKCJteD-cY3bRxs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150529826360-ma9n7jid7ulcm3m0tbpi7toat3vr1dj8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "150529826360-p4jf4329is7kj09c9u2sjjovtpia476c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.memoryvault.memoryVault"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -21,7 +21,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<(User, AuthTokens)> signInWithGoogle(String idToken) async {
     final response = await _remoteDataSource.signInWithGoogle(idToken);
-    
+
     await _localDataSource.saveTokens(
       accessToken: response.accessToken,
       refreshToken: response.refreshToken,
@@ -39,7 +39,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<AuthTokens> refreshToken(String refreshToken) async {
     final response = await _remoteDataSource.refreshToken(refreshToken);
-    
+
     await _localDataSource.saveTokens(
       accessToken: response.accessToken,
       refreshToken: response.refreshToken,

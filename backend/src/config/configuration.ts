@@ -24,12 +24,14 @@ export default () => ({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
     sessionToken: process.env.AWS_SESSION_TOKEN,
+    s3BucketName: process.env.AWS_S3_BUCKET_NAME || 'resurrect-ai-audio',
   },
   elevenlabs: {
     apiKey: process.env.ELEVENLABS_API_KEY,
     companionAgentId: process.env.ELEVENLABS_COMPANION_AGENT_ID,
     personaAgentId: process.env.ELEVENLABS_PERSONA_AGENT_ID,
     companionVoiceId: process.env.ELEVENLABS_COMPANION_VOICE_ID || 'Rachel',
+    webhookSecret: process.env.ELEVENLABS_WEBHOOK_SECRET,
   },
   wandb: {
     apiKey: process.env.WANDB_API_KEY,

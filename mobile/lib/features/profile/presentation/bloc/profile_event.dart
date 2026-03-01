@@ -6,4 +6,6 @@ part 'profile_event.freezed.dart';
 abstract class ProfileEvent with _$ProfileEvent {
   const factory ProfileEvent.loadProfile() = LoadProfile;
   const factory ProfileEvent.signOut() = ProfileSignOut;
+  const factory ProfileEvent.deleteAudioSample(String sampleKey) =
+      DeleteAudioSample;
 }

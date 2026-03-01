@@ -55,12 +55,13 @@ extension ConversationsEventPatterns on ConversationsEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadConversations value)?  loadConversations,TResult Function( StartConversation value)?  startConversation,TResult Function( EndConversation value)?  endConversation,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadConversations value)?  loadConversations,TResult Function( StartCompanionMode value)?  startCompanionMode,TResult Function( StartPersonaMode value)?  startPersonaMode,TResult Function( EndConversation value)?  endConversation,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadConversations() when loadConversations != null:
-return loadConversations(_that);case StartConversation() when startConversation != null:
-return startConversation(_that);case EndConversation() when endConversation != null:
+return loadConversations(_that);case StartCompanionMode() when startCompanionMode != null:
+return startCompanionMode(_that);case StartPersonaMode() when startPersonaMode != null:
+return startPersonaMode(_that);case EndConversation() when endConversation != null:
 return endConversation(_that);case _:
   return orElse();
 
@@ -79,12 +80,13 @@ return endConversation(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadConversations value)  loadConversations,required TResult Function( StartConversation value)  startConversation,required TResult Function( EndConversation value)  endConversation,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadConversations value)  loadConversations,required TResult Function( StartCompanionMode value)  startCompanionMode,required TResult Function( StartPersonaMode value)  startPersonaMode,required TResult Function( EndConversation value)  endConversation,}){
 final _that = this;
 switch (_that) {
 case LoadConversations():
-return loadConversations(_that);case StartConversation():
-return startConversation(_that);case EndConversation():
+return loadConversations(_that);case StartCompanionMode():
+return startCompanionMode(_that);case StartPersonaMode():
+return startPersonaMode(_that);case EndConversation():
 return endConversation(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -102,12 +104,13 @@ return endConversation(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadConversations value)?  loadConversations,TResult? Function( StartConversation value)?  startConversation,TResult? Function( EndConversation value)?  endConversation,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadConversations value)?  loadConversations,TResult? Function( StartCompanionMode value)?  startCompanionMode,TResult? Function( StartPersonaMode value)?  startPersonaMode,TResult? Function( EndConversation value)?  endConversation,}){
 final _that = this;
 switch (_that) {
 case LoadConversations() when loadConversations != null:
-return loadConversations(_that);case StartConversation() when startConversation != null:
-return startConversation(_that);case EndConversation() when endConversation != null:
+return loadConversations(_that);case StartCompanionMode() when startCompanionMode != null:
+return startCompanionMode(_that);case StartPersonaMode() when startPersonaMode != null:
+return startPersonaMode(_that);case EndConversation() when endConversation != null:
 return endConversation(_that);case _:
   return null;
 
@@ -125,11 +128,12 @@ return endConversation(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadConversations,TResult Function()?  startConversation,TResult Function( String id)?  endConversation,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadConversations,TResult Function()?  startCompanionMode,TResult Function( String elderlyUserId)?  startPersonaMode,TResult Function( String id)?  endConversation,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadConversations() when loadConversations != null:
-return loadConversations();case StartConversation() when startConversation != null:
-return startConversation();case EndConversation() when endConversation != null:
+return loadConversations();case StartCompanionMode() when startCompanionMode != null:
+return startCompanionMode();case StartPersonaMode() when startPersonaMode != null:
+return startPersonaMode(_that.elderlyUserId);case EndConversation() when endConversation != null:
 return endConversation(_that.id);case _:
   return orElse();
 
@@ -148,11 +152,12 @@ return endConversation(_that.id);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadConversations,required TResult Function()  startConversation,required TResult Function( String id)  endConversation,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadConversations,required TResult Function()  startCompanionMode,required TResult Function( String elderlyUserId)  startPersonaMode,required TResult Function( String id)  endConversation,}) {final _that = this;
 switch (_that) {
 case LoadConversations():
-return loadConversations();case StartConversation():
-return startConversation();case EndConversation():
+return loadConversations();case StartCompanionMode():
+return startCompanionMode();case StartPersonaMode():
+return startPersonaMode(_that.elderlyUserId);case EndConversation():
 return endConversation(_that.id);case _:
   throw StateError('Unexpected subclass');
 
@@ -170,11 +175,12 @@ return endConversation(_that.id);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadConversations,TResult? Function()?  startConversation,TResult? Function( String id)?  endConversation,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadConversations,TResult? Function()?  startCompanionMode,TResult? Function( String elderlyUserId)?  startPersonaMode,TResult? Function( String id)?  endConversation,}) {final _that = this;
 switch (_that) {
 case LoadConversations() when loadConversations != null:
-return loadConversations();case StartConversation() when startConversation != null:
-return startConversation();case EndConversation() when endConversation != null:
+return loadConversations();case StartCompanionMode() when startCompanionMode != null:
+return startCompanionMode();case StartPersonaMode() when startPersonaMode != null:
+return startPersonaMode(_that.elderlyUserId);case EndConversation() when endConversation != null:
 return endConversation(_that.id);case _:
   return null;
 
@@ -218,8 +224,8 @@ String toString() {
 /// @nodoc
 
 
-class StartConversation implements ConversationsEvent {
-  const StartConversation();
+class StartCompanionMode implements ConversationsEvent {
+  const StartCompanionMode();
   
 
 
@@ -229,7 +235,7 @@ class StartConversation implements ConversationsEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StartConversation);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StartCompanionMode);
 }
 
 
@@ -238,7 +244,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'ConversationsEvent.startConversation()';
+  return 'ConversationsEvent.startCompanionMode()';
 }
 
 
@@ -246,6 +252,72 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class StartPersonaMode implements ConversationsEvent {
+  const StartPersonaMode(this.elderlyUserId);
+  
+
+ final  String elderlyUserId;
+
+/// Create a copy of ConversationsEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StartPersonaModeCopyWith<StartPersonaMode> get copyWith => _$StartPersonaModeCopyWithImpl<StartPersonaMode>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StartPersonaMode&&(identical(other.elderlyUserId, elderlyUserId) || other.elderlyUserId == elderlyUserId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,elderlyUserId);
+
+@override
+String toString() {
+  return 'ConversationsEvent.startPersonaMode(elderlyUserId: $elderlyUserId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $StartPersonaModeCopyWith<$Res> implements $ConversationsEventCopyWith<$Res> {
+  factory $StartPersonaModeCopyWith(StartPersonaMode value, $Res Function(StartPersonaMode) _then) = _$StartPersonaModeCopyWithImpl;
+@useResult
+$Res call({
+ String elderlyUserId
+});
+
+
+
+
+}
+/// @nodoc
+class _$StartPersonaModeCopyWithImpl<$Res>
+    implements $StartPersonaModeCopyWith<$Res> {
+  _$StartPersonaModeCopyWithImpl(this._self, this._then);
+
+  final StartPersonaMode _self;
+  final $Res Function(StartPersonaMode) _then;
+
+/// Create a copy of ConversationsEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? elderlyUserId = null,}) {
+  return _then(StartPersonaMode(
+null == elderlyUserId ? _self.elderlyUserId : elderlyUserId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

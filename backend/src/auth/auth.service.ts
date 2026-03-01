@@ -5,11 +5,15 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { FirebaseService } from '../integrations/firebase/firebase.service';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user.entity';
+import { Conversation } from '../conversations/conversation.entity';
+import { Story } from '../stories/story.entity';
 import { AuthResponseDto, TokenResponseDto, UserResponseDto } from './dto';
 
 interface JwtPayload {
@@ -27,6 +31,10 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    @InjectRepository(Conversation)
+    private readonly conversationRepository: Repository<Conversation>,
+    @InjectRepository(Story)
+    private readonly storyRepository: Repository<Story>,
   ) {}
 
   async authenticateWithGoogle(idToken: string): Promise<AuthResponseDto> {
@@ -132,5 +140,20 @@ export class AuthService {
 
   mapUserToResponse(user: User): UserResponseDto {
     return this.mapUserToDto(user);
+  }
+
+  async getUserStats(userId: string): Promise<{
+    conversationsCount: number;
+    storiesCount: number;
+  }> {
+    const conversationsCount = await this.conversationRepository.count({
+      where: { userId },
+    });
+
+    const storiesCount = await this.storyRepository.count({
+      where: { userId },
+    });
+
+    return { conversationsCount, storiesCount };
   }
 }

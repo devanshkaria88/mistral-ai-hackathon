@@ -8,19 +8,22 @@ import 'package:retrofit/retrofit.dart';
 import '../models/conversation.dart';
 import '../models/end_conversation.dart';
 import '../models/start_conversation.dart';
+import '../models/start_conversation_request.dart';
+import '../models/update_elevenlabs_id_request.dart';
 
 part 'conversations_client.g.dart';
 
 @RestApi()
 abstract class ConversationsClient {
-  factory ConversationsClient(Dio dio, {String? baseUrl}) = _ConversationsClient;
+  factory ConversationsClient(Dio dio, {String? baseUrl}) =
+      _ConversationsClient;
 
   /// Start a new conversation session.
   ///
   /// For voice-first UI: Companion mode for elderly users, Persona mode for family members talking to elderly persona.
   @POST('/api/conversations')
   Future<StartConversation> conversationsControllerStartConversation({
-    @Body() required StartConversation body,
+    @Body() required StartConversationRequest body,
   });
 
   /// List all conversations for the current user
@@ -41,5 +44,15 @@ abstract class ConversationsClient {
   @GET('/api/conversations/{id}')
   Future<Conversation> conversationsControllerFindOne({
     @Path('id') required String id,
+  });
+
+  /// Update ElevenLabs conversation ID.
+  ///
+  /// Called by mobile app when ElevenLabs session connects and returns the real conversation ID.
+  /// [id] - Our internal conversation ID.
+  @PATCH('/api/conversations/{id}/elevenlabs-id')
+  Future<void> conversationsControllerUpdateElevenLabsId({
+    @Path('id') required String id,
+    @Body() required UpdateElevenLabsIdRequest body,
   });
 }

@@ -21,7 +21,7 @@ class _ConversationsClient implements ConversationsClient {
 
   @override
   Future<StartConversation> conversationsControllerStartConversation({
-    required StartConversation body,
+    required StartConversationRequest body,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -134,6 +134,29 @@ class _ConversationsClient implements ConversationsClient {
       rethrow;
     }
     return _value;
+  }
+
+  @override
+  Future<void> conversationsControllerUpdateElevenLabsId({
+    required String id,
+    required UpdateElevenLabsIdRequest body,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _options = _setStreamType<void>(
+      Options(method: 'PATCH', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/conversations/${id}/elevenlabs-id',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    await _dio.fetch<void>(_options);
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
